@@ -1,66 +1,69 @@
- const choices = ['rock','paper','scissors'];
+const choices = ['rock', 'paper', 'scissors'];
+const buttons = document.querySelectorAll('input');
+
+let playerScore = 0;
+let computerScore = 0;
 
 function getComputerChoice() {
-    let index = Math.floor(Math.random() * 3);
-    return choices[index];
-}
-// console.log(getComputerChoice());
-
-function playRound(playerSelection, computerSelection) {
-  playerSelection = playerSelection.toLowerCase();
-  if (playerSelection === computerSelection) {
-    return 'Tie!';
-  } else if (playerSelection === 'rock') {
-    if (computerSelection === 'paper') {
-      return 'You Lose! Paper beats Rock';
-    } else {
-      return 'You Win! Rock beats Scissors';
-    }
-  } else if (playerSelection === 'paper') {
-    if (computerSelection === 'scissors') {
-      return 'You Lose! Scissors beats Paper';
-    } else {
-      return 'You Win! Paper beats Rock';
-    }
-  } else if (playerSelection === 'scissors') {
-    if (computerSelection === 'rock') {
-      return 'You Lose! Rock beats Scissors';
-    } else {
-      return 'You Win! Scissors beats Paper';
-    }
-  }
+	let index = Math.floor(Math.random() * 3);
+	return choices[index];
 }
 
-function game() {
-  let playerScore = 0;
-  let computerScore = 0;
-
-  for (let i = 0; i < 5; i++) {
-    const playerSelection = prompt(
-      'Enter your selection (rock, paper, or scissors):'
-    );
-    const computerSelection = getComputerChoice();
-    const result = playRound(playerSelection, computerSelection);
-    console.log(result);
-
-    if (result.includes('Win')) {
-      playerScore++;
-    } else if (result.includes('Lose')) {
-      computerScore++;
-    }
-  }
-
-  console.log(
-    `Final Score - Player: ${playerScore}, Computer: ${computerScore}`
-  );
-
-  if (playerScore > computerScore) {
-    console.log('Congratulations! You won the game.');
-  } else if (playerScore < computerScore) {
-    console.log('Sorry, you lost the game.');
-  } else {
-    console.log('The game ended in a tie.');
-  }
+function disableButtons() {
+	buttons.forEach((elem) => {
+		elem.disabled = true;
+	});
 }
 
-game();
+function playRound(playerSelection) {
+	playerSelection = playerSelection.toLowerCase();
+	computerSelection = getComputerChoice().toLowerCase();
+
+	let result = '';
+	if (playerSelection === computerSelection) {
+		result = `Tie!<br><br>Player score: ${playerScore} <br>Computer score: ${computerScore}`;
+	} else if (playerSelection === 'rock') {
+		if (computerSelection === 'paper') {
+			computerScore++;
+			result = `You Lose! Paper beats Rock.<br><br>Player score: ${playerScore} <br>Computer score: ${computerScore}`;
+		} else {
+			playerScore++;
+			result = `You Win! Rock beats Scissors.<br><br>Player score: ${playerScore} <br>Computer score: ${computerScore}`;
+		}
+	} else if (playerSelection === 'paper') {
+		if (computerSelection === 'scissors') {
+			computerScore++;
+			result = `You Lose! Scissors beats Paper.<br><br>Player score: ${playerScore} <br>Computer score: ${computerScore}`;
+		} else {
+			playerScore++;
+			result = `You Win! Paper beats Rock.<br><br>Player score: ${playerScore} <br>Computer score: ${computerScore}`;
+		}
+	} else if (playerSelection === 'scissors') {
+		if (computerSelection === 'rock') {
+			computerScore++;
+			result = `You Lose! Rock beats Scissors.<br><br>Player score: ${playerScore} <br>Computer score: ${computerScore}`;
+		} else {
+			playerScore++;
+			result = `You Win! Scissors beats Paper.<br><br>Player score: ${playerScore} <br>Computer score: ${computerScore}`;
+		}
+	}
+	document.getElementById('result').innerHTML = result;
+
+	if (playerScore == 5) {
+		document.getElementById('result').innerHTML =
+			'You won the game! Reload the page to play again.';
+		disableButtons();
+	}
+
+	if (computerScore == 5) {
+		document.getElementById('result').innerHTML =
+			'Computer won the game! Reload the page to play again.';
+		disableButtons();
+	}
+}
+
+buttons.forEach((button) => {
+	button.addEventListener('click', function () {
+		playRound(button.value);
+	});
+});
